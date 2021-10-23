@@ -29,9 +29,11 @@ module "cos-nginx" {
 
 # use it as metadata in a compute instance or template
 resource "google_compute_instance" "default" {
+  # [...]
   metadata = {
     user-data = module.cos-nginx.cloud_config
   }
+}
 ```
 
 ### Nginx instance
