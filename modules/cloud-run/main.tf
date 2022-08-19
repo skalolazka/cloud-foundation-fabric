@@ -30,6 +30,16 @@ locals {
     },
     try(var.vpc_connector.egress_settings, null) == null ? {} : {
       "run.googleapis.com/vpc-access-egress" = var.vpc_connector.egress_settings
+    },
+    var.cloudsql_instances == null ? {} : {
+      "run.googleapis.com/cloudsql-instances" = var.cloudsql_instances
+      "run.googleapis.com/client-name"        = "terraform"
+    },
+    var.minscale == null ? {} : {
+      "autoscaling.knative.dev/minScale" = var.minscale
+    },
+    var.maxscale == null ? {} : {
+      "autoscaling.knative.dev/maxScale" = var.maxscale
     }
   )
   revision_name = try(var.revision_name, null) == null ? null : "${var.name}-${var.revision_name}"

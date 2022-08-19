@@ -140,7 +140,7 @@ variable "volumes" {
 }
 
 variable "vpc_connector" {
-  description = "VPC connector configuration. Set create to 'true' if a new connecto needs to be created."
+  description = "VPC connector configuration. Set create to 'true' if a new connector needs to be created."
   type = object({
     create          = bool
     name            = string
@@ -156,4 +156,22 @@ variable "vpc_connector_config" {
     network       = string
   })
   default = null
+}
+
+variable "cloudsql_instances" {
+  description = "Cloud SQL connections"
+  type        = string
+  default     = null
+}
+
+variable "minscale" {
+  description = "Mininum number of instances"
+  type        = number
+  default     = null
+}
+
+variable "maxscale" {
+  description = "Maximum number of instances"
+  type        = number
+  default     = null
 }

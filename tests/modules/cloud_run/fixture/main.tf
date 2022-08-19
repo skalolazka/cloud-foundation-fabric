@@ -22,6 +22,21 @@ variable "vpc_connector_config" {
   default = null
 }
 
+variable "cloudsql_instances" {
+  type    = string
+  default = null
+}
+
+variable "minscale" {
+  type    = any
+  default = null
+}
+
+variable "maxscale" {
+  type    = any
+  default = null
+}
+
 module "cloud_run" {
   source        = "../../../../modules/cloud-run"
   project_id    = "my-project"
@@ -49,4 +64,7 @@ module "cloud_run" {
   }
   vpc_connector        = var.vpc_connector
   vpc_connector_config = var.vpc_connector_config
+  cloudsql_instances   = var.cloudsql_instances
+  minscale             = var.minscale
+  maxscale             = var.maxscale
 }

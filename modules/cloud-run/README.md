@@ -206,6 +206,35 @@ module "cloud_run" {
 }
 # tftest modules=1 resources=1
 ```
+
+## Connect to a CloudSQL instance
+
+```
+module "cloud_run" {
+  source     = "./modules/cloud-run"
+  project_id = "my-project"
+  name       = "hello"
+  cloudsql_instances = module.cloudsql.connection_name
+  vpc_connector = {
+    create          = true
+    name            = "my-connector"
+    egress_settings = "all-traffic"
+  }
+  vpc_connector_config = {
+    network       = module.mysql_vpc.self_link
+    ip_cidr_range = var.connector_cidr
+  }
+
+  containers = [{
+    image = "my-image"
+    options       = null
+    ports         = null
+    resources     = null
+    volume_mounts = null
+  }]
+}
+# tftest modules=1 resources=2
+```
 <!-- BEGIN TFDOC -->
 
 ## Variables
@@ -216,9 +245,12 @@ module "cloud_run" {
 | [name](variables.tf#L77) | Name used for cloud run service. | <code>string</code> | ✓ |  |
 | [project_id](variables.tf#L88) | Project id used for all resources. | <code>string</code> | ✓ |  |
 | [audit_log_triggers](variables.tf#L18) | Event arc triggers (Audit log). | <code title="list&#40;object&#40;&#123;&#10;  service_name &#61; string&#10;  method_name  &#61; string&#10;&#125;&#41;&#41;">list&#40;object&#40;&#123;&#8230;&#125;&#41;&#41;</code> |  | <code>null</code> |
+| [cloudsql_instances](variables.tf#L161) | Cloud SQL connections | <code>string</code> |  | <code>null</code> |
 | [iam](variables.tf#L59) | IAM bindings for Cloud Run service in {ROLE => [MEMBERS]} format. | <code>map&#40;list&#40;string&#41;&#41;</code> |  | <code>&#123;&#125;</code> |
 | [ingress_settings](variables.tf#L65) | Ingress settings. | <code>string</code> |  | <code>null</code> |
 | [labels](variables.tf#L71) | Resource labels. | <code>map&#40;string&#41;</code> |  | <code>&#123;&#125;</code> |
+| [maxscale](variables.tf#L173) | Maximum number of instances | <code>number</code> |  | <code>null</code> |
+| [minscale](variables.tf#L167) | Mininum number of instances | <code>number</code> |  | <code>null</code> |
 | [prefix](variables.tf#L82) | Optional prefix used for resource names. | <code>string</code> |  | <code>null</code> |
 | [pubsub_triggers](variables.tf#L93) | Eventarc triggers (Pub/Sub). | <code>list&#40;string&#41;</code> |  | <code>null</code> |
 | [region](variables.tf#L99) | Region used for all resources. | <code>string</code> |  | <code>&#34;europe-west1&#34;</code> |
@@ -227,7 +259,7 @@ module "cloud_run" {
 | [service_account_create](variables.tf#L117) | Auto-create service account. | <code>bool</code> |  | <code>false</code> |
 | [traffic](variables.tf#L123) | Traffic. | <code>map&#40;number&#41;</code> |  | <code>null</code> |
 | [volumes](variables.tf#L129) | Volumes. | <code title="list&#40;object&#40;&#123;&#10;  name        &#61; string&#10;  secret_name &#61; string&#10;  items &#61; list&#40;object&#40;&#123;&#10;    key  &#61; string&#10;    path &#61; string&#10;  &#125;&#41;&#41;&#10;&#125;&#41;&#41;">list&#40;object&#40;&#123;&#8230;&#125;&#41;&#41;</code> |  | <code>null</code> |
-| [vpc_connector](variables.tf#L142) | VPC connector configuration. Set create to 'true' if a new connecto needs to be created. | <code title="object&#40;&#123;&#10;  create          &#61; bool&#10;  name            &#61; string&#10;  egress_settings &#61; string&#10;&#125;&#41;">object&#40;&#123;&#8230;&#125;&#41;</code> |  | <code>null</code> |
+| [vpc_connector](variables.tf#L142) | VPC connector configuration. Set create to 'true' if a new connector needs to be created. | <code title="object&#40;&#123;&#10;  create          &#61; bool&#10;  name            &#61; string&#10;  egress_settings &#61; string&#10;&#125;&#41;">object&#40;&#123;&#8230;&#125;&#41;</code> |  | <code>null</code> |
 | [vpc_connector_config](variables.tf#L152) | VPC connector network configuration. Must be provided if new VPC connector is being created. | <code title="object&#40;&#123;&#10;  ip_cidr_range &#61; string&#10;  network       &#61; string&#10;&#125;&#41;">object&#40;&#123;&#8230;&#125;&#41;</code> |  | <code>null</code> |
 
 ## Outputs

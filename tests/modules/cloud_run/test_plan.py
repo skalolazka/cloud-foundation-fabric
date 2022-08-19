@@ -79,3 +79,39 @@ def test_vpc_connector_create(plan_runner):
       vpc_connector_config='{ip_cidr_range="10.0.0.0/28", network="default"}')
   assert len(
       [r for r in resources if r['type'] == 'google_vpc_access_connector']) == 1
+
+
+def test_minscale(plan_runner):
+  "Test the minscale template annotation."
+  _, resources = plan_runner(minscale=2)
+  cloud_run = [
+      r['values']
+      for r in resources
+      if r['type'] == 'google_cloud_run_service'
+  ]
+  print(cloud_run)
+  assert cloud_run[0]['template'][0]['metadata'][0]['annotations']['autoscaling.knative.dev/minScale'] == '2'
+
+
+def test_maxscale(plan_runner):
+  "Test the maxscale template annotation."
+  _, resources = plan_runner(maxscale=3)
+  cloud_run = [
+      r['values']
+      for r in resources
+      if r['type'] == 'google_cloud_run_service'
+  ]
+  print(cloud_run)
+  assert cloud_run[0]['template'][0]['metadata'][0]['annotations']['autoscaling.knative.dev/maxScale'] == '3'
+
+
+def test_cloudsql(plan_runner):
+  "Test the Cloudsql instances template annotation."
+  _, resources = plan_runner(cloudsql_instances='mysql_test')
+  cloud_run = [
+      r['values']
+      for r in resources
+      if r['type'] == 'google_cloud_run_service'
+  ]
+  print(cloud_run)
+  assert cloud_run[0]['template'][0]['metadata'][0]['annotations']['run.googleapis.com/cloudsql-instances'] == 'mysql_test'
